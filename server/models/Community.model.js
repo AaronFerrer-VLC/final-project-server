@@ -48,10 +48,14 @@ const communitySchema = new Schema(
         message: 'Selecciona al menos 1 década'
       }
     },
-    movies: {
+    moviesApiIds: {
       type: [String]
     },
     users: [{
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }],
+    owner: [{
       type: Schema.Types.ObjectId,
       ref: 'User'
     }]
@@ -61,6 +65,6 @@ const communitySchema = new Schema(
   }
 );
 
-const User = model("Community", communitySchema);
+const Community = model("Community", communitySchema);
 
 module.exports = Community;

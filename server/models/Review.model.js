@@ -15,10 +15,14 @@ const reviewSchema = new Schema(
     },
     rate: {
       type: Number,
-      required: [true, 'Deja tu valoración']
+      required: [true, 'Deja tu valoración'],
+      min: 0,
+      max: 10,
+      default: 0
     },
     likesCounter: {
-      type: Number
+      type: Number,
+      default: 0
     }
   },
   {
