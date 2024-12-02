@@ -10,7 +10,7 @@ const getReviews = (req, res, next) => {
         .catch(err => next(err))
 }
 
-const getTopRatedReviews = (req, res, next) => {
+const getMostLikedReviews = (req, res, next) => {
 
     Review
         .find()
@@ -78,7 +78,7 @@ const saveReview = (req, res, next) => {
 
 const editReview = (req, res, next) => {
 
-    const { author, movieApiId, content, rate, likesCounter } = req.body
+    const { movieApiId, content, rate, likesCounter } = req.body
     const { id: reviewId } = req.params
 
     if (!mongoose.Types.ObjectId.isValid(reviewId)) {
@@ -89,7 +89,7 @@ const editReview = (req, res, next) => {
     Review
         .findByIdAndUpdate(
             reviewId,
-            { author, movieApiId, content, rate, likesCounter },
+            { movieApiId, content, rate, likesCounter },
             { runValidators: true }
         )
         .then(review => res.sendStatus(200))
@@ -113,18 +113,32 @@ const deleteReview = (req, res, next) => {
 
 const filterReviews = (req, res, next) => {
 
+    const allowedFilters = ['author', 'movieApiId', 'content']
+    const query = {}
+
+    allowedFilters.forEach(filter => {
+        if (req.query[filter]) {
+            if (
+                filter === 'author' ||
+                filter === 'movieApiId' ||
+                filter === 'content'
+            ) {
+                query[filter] = { $regex: req.query[filter], $options: 'i' }
+            }
+        }
+    })
+
     Review
-        .find(req.query)
-        .then(reviews => res.json(reviews))
+        .find(query)
+        .then(communities => res.json(communities))
         .catch(err => next(err))
 }
-
 
 module.exports = {
     getReviews,
     getReviewsFromMovie,
     getReviewsFromAuthor,
-    getTopRatedReviews,
+    getMostLikedReviews,
     saveReview,
     getOneReview,
     editReview,

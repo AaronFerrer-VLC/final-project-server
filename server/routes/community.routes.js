@@ -17,7 +17,7 @@ router.get('/communities/search', filterCommunities)
 
 router.post('/communities/', verifyToken, saveCommunity)
 
-router.put('/communities/:id', editCommunity)
+router.put('/communities/:id', verifyToken, editCommunity)
 
 router.delete('/communities/:id', deleteCommunity)
 

@@ -15,7 +15,8 @@ const userSchema = new Schema(
     username: {
       type: String,
       required: [true, 'El nombre de usuario es obligatorio'],
-      minlength: [3, 'El usuario necesita mínimo 3 caracteres']
+      minlength: [3, 'El usuario necesita mínimo 3 caracteres'],
+      match: [/^\w+$/, 'El nombre de usuario debe ser una sola palabra sin espacios ni caracteres especiales']
     },
     avatar: {
       type: String,

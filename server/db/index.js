@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const MONGO_URI =
-  process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/final-project-server";
+  process.env.MONGODB_URI || "mongodb+srv://lucaslelieurll:ironhackstudent!.@lareview.8y1fr.mongodb.net/";
 
 mongoose
   .connect(MONGO_URI)

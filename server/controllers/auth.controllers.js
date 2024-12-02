@@ -89,8 +89,24 @@ const verifyUser = (req, res, next) => {
     res.json({ loggedUserData: req.payload })
 }
 
+const filterUsers = (req, res, next) => {
+
+    const { username } = req.query
+    const query = {}
+
+    if (username) {
+        query.username = { $regex: username, $options: 'i' }
+    }
+
+    User
+        .find(query)
+        .then(communities => res.json(communities))
+        .catch(err => next(err))
+}
+
 module.exports = {
     signupUser,
     loginUser,
-    verifyUser
+    verifyUser,
+    filterUsers
 }

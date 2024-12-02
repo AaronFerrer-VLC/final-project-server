@@ -81,8 +81,35 @@ const deleteCommunity = (req, res, next) => {
 
 const filterCommunities = (req, res, next) => {
 
+    const allowedFilters = ['title', 'description', 'fetishActors', 'fetishDirectors', 'genres', 'decades', 'moviesApiIds']
+    const query = {}
+
+    allowedFilters.forEach(filter => {
+        if (req.query[filter]) {
+            if (
+                filter === 'title' ||
+                filter === 'description' ||
+                filter === 'fetishActors' ||
+                filter === 'fetishDirectors'
+            ) {
+                query[filter] = { $regex: req.query[filter], $options: 'i' }
+            }
+            if (filter === 'moviesApiIds' ||
+                filter === 'genres'
+            ) {
+                query[filter] = { $regex: `^${req.query[filter]}$`, $options: 'i' }
+            }
+            if (filter === 'decades') {
+                query[filter] = req.query[filter]
+            }
+
+        } else {
+            query[filter] = req.query[filter]
+        }
+    })
+
     Community
-        .find(req.query)
+        .find(query)
         .then(communities => res.json(communities))
         .catch(err => next(err))
 }

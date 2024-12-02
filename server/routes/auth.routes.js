@@ -1,7 +1,8 @@
 const {
   signupUser,
   loginUser,
-  verifyUser
+  verifyUser,
+  filterUsers
 } = require("../controllers/auth.controllers")
 
 const verifyToken = require("./../middlewares/verifyToken")
@@ -14,6 +15,9 @@ router.post('/signup', signupUser)
 router.post('/login', loginUser)
 
 router.get('/verify', verifyToken, verifyUser)
+
+router.get('/users/search', filterUsers)
+
 
 
 module.exports = router
