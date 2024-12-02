@@ -16,7 +16,38 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'El nombre de usuario es obligatorio'],
       minlength: [3, 'El usuario necesita mínimo 3 caracteres']
-    }
+    },
+    avatar: {
+      type: String,
+    },
+    firstName: {
+      type: String,
+    },
+    familyName: {
+      type: String,
+    },
+    socialNetworksProfiles: {
+      type: [String],
+    },
+    bio: {
+      type: String,
+    },
+    favoriteGenres: {
+      type: [String],
+      // validate: {
+      //   validator: genres => genres.length >= 3,
+      //   message: 'Selecciona al menos tres géneros'
+      // }
+    },
+    role: {
+      type: String,
+      enum: ["ADMIN", "USER"],
+      default: 'USER'
+    },
+    communities: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Community'
+    }]
   },
   {
     timestamps: true
@@ -25,4 +56,4 @@ const userSchema = new Schema(
 
 const User = model("User", userSchema);
 
-module.exports = User;
+module.exports = User
