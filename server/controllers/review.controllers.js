@@ -10,6 +10,46 @@ const getReviews = (req, res, next) => {
         .catch(err => next(err))
 }
 
+const getTopRatedReviews = (req, res, next) => {
+
+    Review
+        .find()
+        .sort({ likesCounter: -1 })
+        .limit(10)
+        .then(reviews => res.json(reviews))
+        .catch(err => next(err))
+}
+
+const getReviewsFromMovie = (req, res, next) => {
+
+    const { movieId: movieApiId } = req.params
+
+    Review
+        .find({ movieApiId })
+        .sort({ rate: -1 })
+        .limit(10)
+        .then(reviews => res.json(reviews))
+        .catch(err => next(err))
+}
+
+const getReviewsFromAuthor = (req, res, next) => {
+
+    const { authorId: author } = req.params
+
+    if (!mongoose.Types.ObjectId.isValid(author)) {
+        res.status(404).json({ message: "Id format not valid" });
+        return
+    }
+
+    Review
+        .find({ author })
+        .sort({ rate: -1 })
+        .limit(10)
+        .then(reviews => res.json(reviews))
+        .catch(err => next(err))
+}
+
+
 const getOneReview = (req, res, next) => {
 
     const { id: reviewId } = req.params
@@ -82,9 +122,12 @@ const filterReviews = (req, res, next) => {
 
 module.exports = {
     getReviews,
+    getReviewsFromMovie,
+    getReviewsFromAuthor,
+    getTopRatedReviews,
     saveReview,
     getOneReview,
     editReview,
     deleteReview,
-    filterReviews
+    filterReviews,
 }

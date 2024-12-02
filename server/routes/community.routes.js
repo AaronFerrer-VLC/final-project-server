@@ -23,6 +23,6 @@ router.delete('/communities/:id', deleteCommunity)
 
 router.get('/communities/', getCommunities)
 
-router.get('/communities/:id', getMovieDetails, getOneCommunity)
+router.get('/communities/:id', /*getMovieDetails,*/ getOneCommunity)
 
 module.exports = router

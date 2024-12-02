@@ -1,9 +1,5 @@
 const mongoose = require('mongoose')
-const axios = require('axios')
-
 const Community = require('./../models/Community.model')
-
-const { getMoviesDetailsFromCommunity } = require("./movie.controllers")
 
 const getCommunities = (req, res, next) => {
 
@@ -25,7 +21,14 @@ const getOneCommunity = (req, res, next) => {
 
     Community
         .findById(communityId)
-        .then(community => res.json(community))
+        .then(community => {
+            // const communityWithMoviesDetails = {
+            //     ...community.toObject(),
+            //     moviesDetails: req.moviesDetails
+            // }
+            // res.json(communityWithMoviesDetails)
+            res.json(community)
+        })
         .catch(err => next(err))
 
 }
@@ -57,7 +60,7 @@ const editCommunity = (req, res, next) => {
             { title, description, cover, genres, fetishDirectors, fetishActors, decades, moviesApiIds, users },
             { runValidators: true }
         )
-        .then(community => res.sendStatus(200))
+        .then(() => res.sendStatus(200))
         .catch(err => next(err))
 }
 
