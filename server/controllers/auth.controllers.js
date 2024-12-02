@@ -6,7 +6,7 @@ const saltRounds = 10
 
 const signupUser = (req, res, next) => {
 
-    const { username, email, password } = req.body
+    const { username, email, password, avatar, firstName, familyName, socialNetworksProfiles, bio, favoriteGenres, role, communities } = req.body
 
     if (email === '' || password === '' || username === '') {
         res.status(400).json({ message: "Provide email, password and name" })
@@ -36,7 +36,7 @@ const signupUser = (req, res, next) => {
             const salt = bcrypt.genSaltSync(saltRounds)
             const hashedPassword = bcrypt.hashSync(password, salt)
 
-            return User.create({ username, email, password: hashedPassword })
+            return User.create({ username, email, password: hashedPassword, avatar, firstName, familyName, socialNetworksProfiles, bio, favoriteGenres, role, communities })
         })
         .then(newUser => res.status(201).json(newUser))
         .catch(err => next(err))

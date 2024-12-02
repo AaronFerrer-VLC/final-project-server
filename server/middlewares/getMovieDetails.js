@@ -13,26 +13,24 @@ const getMovieDetails = (req, res, next) => {
 
             const moviesIds = community.moviesApiIds
 
-            let moviesDetails = []
-
-            moviesIds.forEach(eachMovieId => {
+            const moviePromises = moviesIds.map(eachMovieId => {
 
                 const url = `https://api.themoviedb.org/3/movie/${eachMovieId}`
 
-                axios
+                return axios
                     .get(url, { headers: { Authorization: `Bearer ${process.env.TMDB_API_TOKEN}` } })
-                    .then(response => {
-                        moviesDetails.push(response.data)
-                        return moviesDetails
-                    })
-                    .catch(err => next(err))
+                    .then(response => response.data)
+
             })
 
+            return Promise.all(moviePromises)
+
         })
-        .then(response => res.json(response))
+        .then(moviesDetails => {
+            req.moviesDetails = moviesDetails
+            next()
+        })
         .catch(err => next(err))
-
-
 }
 
 module.exports = getMovieDetails

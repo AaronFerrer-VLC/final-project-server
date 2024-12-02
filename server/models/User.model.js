@@ -34,10 +34,12 @@ const userSchema = new Schema(
     },
     favoriteGenres: {
       type: [String],
-      // validate: {
-      //   validator: genres => genres.length >= 3,
-      //   message: 'Selecciona al menos tres géneros'
-      // }
+      validate: {
+        validator: function (genres) {
+          return genres.length >= 3
+        },
+        message: 'Selecciona al menos tres géneros'
+      }
     },
     role: {
       type: String,
