@@ -8,7 +8,7 @@ const {
 } = require("../controllers/community.controllers")
 
 const verifyToken = require("../middlewares/verifyToken")
-const getMovieDetails = require("../middlewares/getMovieDetails")
+// const getMovieDetails = require("../middlewares/getMovieDetails")
 
 const router = require("express").Router()
 

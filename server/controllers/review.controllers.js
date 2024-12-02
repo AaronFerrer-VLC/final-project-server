@@ -113,24 +113,22 @@ const deleteReview = (req, res, next) => {
 
 const filterReviews = (req, res, next) => {
 
-    const allowedFilters = ['author', 'movieApiId', 'content']
-    const query = {}
+    const { query } = req.query
 
-    allowedFilters.forEach(filter => {
-        if (req.query[filter]) {
-            if (
-                filter === 'author' ||
-                filter === 'movieApiId' ||
-                filter === 'content'
-            ) {
-                query[filter] = { $regex: req.query[filter], $options: 'i' }
-            }
-        }
-    })
+    if (!query) {
+        return res.status(400).json({ message: "Introduce un término de búsqueda" });
+    }
+
+    const querySearch = {
+        $or: [
+            { movieApiId: { $regex: query, $options: 'i' } },
+            { content: { $regex: query, $options: 'i' } }
+        ]
+    }
 
     Review
-        .find(query)
-        .then(communities => res.json(communities))
+        .find(querySearch)
+        .then(reviews => res.json(reviews))
         .catch(err => next(err))
 }
 

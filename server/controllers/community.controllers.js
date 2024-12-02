@@ -81,35 +81,28 @@ const deleteCommunity = (req, res, next) => {
 
 const filterCommunities = (req, res, next) => {
 
-    const allowedFilters = ['title', 'description', 'fetishActors', 'fetishDirectors', 'genres', 'decades', 'moviesApiIds']
-    const query = {}
+    const { query } = req.query
 
-    allowedFilters.forEach(filter => {
-        if (req.query[filter]) {
-            if (
-                filter === 'title' ||
-                filter === 'description' ||
-                filter === 'fetishActors' ||
-                filter === 'fetishDirectors'
-            ) {
-                query[filter] = { $regex: req.query[filter], $options: 'i' }
-            }
-            if (filter === 'moviesApiIds' ||
-                filter === 'genres'
-            ) {
-                query[filter] = { $regex: `^${req.query[filter]}$`, $options: 'i' }
-            }
-            if (filter === 'decades') {
-                query[filter] = req.query[filter]
-            }
+    if (!query) {
+        return res.status(400).json({ message: "Introduce un término de búsqueda" });
+    }
 
-        } else {
-            query[filter] = req.query[filter]
-        }
-    })
+    const querySearch = {
+        $or: [
+            { title: { $regex: query, $options: 'i' } },
+            { description: { $regex: query, $options: 'i' } },
+            { genres: { $regex: query, $options: 'i' } },
+            { fetishDirectors: { $regex: query, $options: 'i' } },
+            { fetishActors: { $regex: query, $options: 'i' } },
+            { decades: parseInt(query) || undefined },
+            { moviesApiIds: query }
+        ]
+    }
+
+    console.log(querySearch)
 
     Community
-        .find(query)
+        .find(querySearch)
         .then(communities => res.json(communities))
         .catch(err => next(err))
 }
