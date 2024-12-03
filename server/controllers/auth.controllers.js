@@ -96,7 +96,10 @@ const filterUsers = (req, res, next) => {
 
     if (username) {
         query.username = { $regex: username, $options: 'i' }
+    } else {
+        query.username = null
     }
+
 
     User
         .find(query)

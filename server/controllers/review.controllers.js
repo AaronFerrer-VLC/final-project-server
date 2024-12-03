@@ -124,6 +124,8 @@ const filterReviews = (req, res, next) => {
                 filter === 'content'
             ) {
                 query[filter] = { $regex: req.query[filter], $options: 'i' }
+            } else {
+                query[filter] = req.query[filter]
             }
         }
     })

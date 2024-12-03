@@ -79,39 +79,51 @@ const deleteCommunity = (req, res, next) => {
         .catch(err => next(err))
 }
 
-const filterCommunities = (req, res, next) => {
+const filterCommunities = async (req, res, next) => {
 
     const allowedFilters = ['title', 'description', 'fetishActors', 'fetishDirectors', 'genres', 'decades', 'moviesApiIds']
-    const query = {}
 
-    allowedFilters.forEach(filter => {
-        if (req.query[filter]) {
-            if (
-                filter === 'title' ||
-                filter === 'description' ||
-                filter === 'fetishActors' ||
-                filter === 'fetishDirectors'
-            ) {
-                query[filter] = { $regex: req.query[filter], $options: 'i' }
-            }
-            if (filter === 'moviesApiIds' ||
-                filter === 'genres'
-            ) {
-                query[filter] = { $regex: `^${req.query[filter]}$`, $options: 'i' }
-            }
-            if (filter === 'decades') {
-                query[filter] = req.query[filter]
-            }
+    try {
+        // Construir el filtro dinámico
+        const filters = {};
 
-        } else {
-            query[filter] = req.query[filter]
+        if (req.query.title) {
+            filters.title = { $regex: req.query.title, $options: 'i' }; // Búsqueda por coincidencia parcial (case-insensitive)
         }
-    })
+        if (req.query.description) {
+            filters.description = { $regex: req.query.description, $options: 'i' };
+        }
+        if (req.query.genres) {
+            filters.genres = { $in: req.query.genres.split(',') }; // Verifica si hay algún género en la lista
+        }
+        if (req.query.fetishDirectors) {
+            filters.fetishDirectors = { $in: req.query.fetishDirectors.split(',') };
+        }
+        if (req.query.fetishActors) {
+            filters.fetishActors = { $in: req.query.fetishActors.split(',') };
+        }
+        if (req.query.decades) {
+            filters.decades = { $in: req.query.decades.split(',').map(Number) }; // Convierte a números
+        }
+        if (req.query.owner) {
+            filters.owner = req.query.owner; // Buscar por ID exacto
+        }
 
-    Community
-        .find(query)
-        .then(communities => res.json(communities))
-        .catch(err => next(err))
+        // Ejecutar la consulta
+        const communities = await Community.find(filters);
+
+        // Responder con los resultados
+        res.status(200).json(communities);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al realizar la búsqueda', details: error.message });
+    }
+
+
+
+    // Community
+    //     .find(query)
+    //     .then(communities => res.json(communities))
+    //     .catch(err => next(err))
 }
 
 
