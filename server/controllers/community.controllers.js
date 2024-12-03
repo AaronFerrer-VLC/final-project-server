@@ -99,8 +99,6 @@ const filterCommunities = async (req, res, next) => {
         ]
     }
 
-    console.log(querySearch)
-
     Community
         .find(querySearch)
         .then(communities => res.json(communities))
