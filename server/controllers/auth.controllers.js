@@ -91,19 +91,17 @@ const verifyUser = (req, res, next) => {
 
 const filterUsers = (req, res, next) => {
 
-    const { username } = req.query
-    const query = {}
+    const { query } = req.query
 
-    if (username) {
-        query.username = { $regex: username, $options: 'i' }
-    } else {
-        query.username = null
+    if (!query) {
+        return res.status(400).json({ message: "Introduce un término de búsqueda" });
     }
 
+    const querySearch = { username: { $regex: query, $options: 'i' } }
 
     User
-        .find(query)
-        .then(communities => res.json(communities))
+        .find(querySearch)
+        .then(reviews => res.json(reviews))
         .catch(err => next(err))
 }
 
